@@ -1,14 +1,25 @@
+
+
 var board
-var scoreDisplay
 var selectedCandy = null;
 var cellSize = 50; // Set the size of each cell in the game board
 var score = 0;
+var scoreDisplay
+var board = [
+  [1, 2, 0, 1, 2, 0, 1],
+  [0, 1, 2, 0, 1, 2, 0],
+  [2, 0, 1, 2, 0, 1, 2],
+  [1, 2, 0, 1, 2, 0, 1],
+  [0, 1, 2, 0, 1, 2, 0],
+  [2, 0, 1, 2, 0, 1, 2],
+  [1, 2, 0, 1, 2, 0, 1]
+]
 
 function setup() {
   createCanvas(400, 400);
   frameRate(1)
   scoreDisplay = createDiv('Score: ' + score);
-  board = createBoard(7)
+  // board = createBoard(5)
 }
 
 function createBoard(gridSize) {
@@ -22,11 +33,15 @@ function createBoard(gridSize) {
   return boardArray;
 }
 
+
+
+
+
 function draw() {
-  var matches = findMatches();
   background(220);
+  // console.log(board)
   scoreDisplay.html('Score: ' + score);
-  
+
   for (var i = 0; i < board.length; i++) {
     for (var j = 0; j < board[i].length; j++) {
       fill(getColor(board[i][j])); // Get the color of the candy
@@ -34,10 +49,11 @@ function draw() {
     }
   }
    
+  var matches = findMatches();
   if (matches.length > 0) {
     removeCandies(matches);
-    calculateScore(matches);
     fallCandies();
+    updateScore(matches);
   } else {
     fallCandies();
   }
@@ -65,13 +81,13 @@ function findMatches() {
   }
 
   return matches;
-
 }
 
 function removeCandies(matches) {
   for (var i = 0; i < matches.length; i++) {
     var match = matches[i];
     board[match.i][match.j] = -1;
+    score = score + 1
   }
 }
 
@@ -89,15 +105,16 @@ function fallCandies() {
           board[k][j] = -1;
         } else {
           // If there are no candies above, create a new one at the top
-          board[i][j] = Math.floor(Math.random() * 3);
+          // board[i][j] = Math.floor(Math.random() * 3);
         }
       }
     }
   }
 }
 
-function calculateScore(matches) {
-  score += matches.length;
+function updateScore(matches) {
+  // score += matches.length;
+  console.log(score, ' + score')
 }
 
 function getColor(candyType) {
@@ -119,9 +136,9 @@ function getColor(candyType) {
   }
 }
 
-var selectedCandy = null;
 
 function mouseClicked() {
+  
   var i = Math.floor(mouseY / cellSize);
   var j = Math.floor(mouseX / cellSize);
   if (selectedCandy == null) {
@@ -136,3 +153,8 @@ function mouseClicked() {
   }
 }
 
+module.exports = {
+  fallCandies,
+  createBoard,
+  findMatches,
+}
