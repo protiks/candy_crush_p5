@@ -5,6 +5,7 @@ var selectedCandy = null;
 var cellSize = 50; // Set the size of each cell in the game board
 var score = 0;
 var scoreDisplay
+var button
 var board = [
   [1, 2, 0, 1, 2, 0, 1],
   [0, 1, 2, 0, 1, 2, 0],
@@ -14,12 +15,17 @@ var board = [
   [2, 0, 1, 2, 0, 1, 2],
   [1, 2, 0, 1, 2, 0, 1]
 ]
-
 function setup() {
+  button = createButton('shuffle');
+  button.mousePressed(restartGame);
   createCanvas(400, 400);
   frameRate(1)
   scoreDisplay = createDiv('Score: ' + score);
-  // board = createBoard(5)
+}
+
+function restartGame() {
+  board = createBoard(7);
+  score = 0;
 }
 
 function createBoard(gridSize) {
@@ -39,7 +45,6 @@ function createBoard(gridSize) {
 
 function draw() {
   background(220);
-  // console.log(board)
   scoreDisplay.html('Score: ' + score);
 
   for (var i = 0; i < board.length; i++) {
@@ -65,7 +70,7 @@ function findMatches() {
   // Check for horizontal matches
   for (var i = 0; i < board.length; i++) {
     for (var j = 0; j < board[i].length - 2; j++) {
-      if (board[i][j] == board[i][j + 1] && board[i][j] == board[i][j + 2]) {
+      if (board[i][j] !== -1 && board[i][j] == board[i][j + 1] && board[i][j] == board[i][j + 2]) {
         matches.push({ i: i, j: j }, { i: i, j: j + 1 }, { i: i, j: j + 2 });
       }
     }
@@ -74,7 +79,7 @@ function findMatches() {
   // Check for vertical matches
   for (var i = 0; i < board.length - 2; i++) {
     for (var j = 0; j < board[i].length; j++) {
-      if (board[i][j] == board[i + 1][j] && board[i][j] == board[i + 2][j]) {
+      if (board[i][j] !== -1 && board[i][j] == board[i + 1][j] && board[i][j] == board[i + 2][j]) {
         matches.push({ i: i, j: j }, { i: i + 1, j: j }, { i: i + 2, j: j });
       }
     }
@@ -83,11 +88,11 @@ function findMatches() {
   return matches;
 }
 
+
 function removeCandies(matches) {
   for (var i = 0; i < matches.length; i++) {
     var match = matches[i];
     board[match.i][match.j] = -1;
-    score = score + 1
   }
 }
 
@@ -113,8 +118,8 @@ function fallCandies() {
 }
 
 function updateScore(matches) {
-  // score += matches.length;
-  console.log(score, ' + score')
+  
+  score += matches.length;
 }
 
 function getColor(candyType) {
